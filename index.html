@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./js/mqtt.min.js"></script>
+</head>
+
+<body>
+
+    <script>
+        const mqttClient = mqtt.connect('wss://mqtt.eclipseprojects.io/mqtt');// 建立连接
+        mqttClient.on('connect', () => mqttClient.subscribe('cn/edu/cuz/scj/data/+'));// 连接完成,订阅主题
+        mqttClient.on('message', (topic, message) => {
+            /* 接收消息回调 */
+            let resp = JSON.parse(message.toString());
+            let mac = topic.substring(20);
+
+            // console.log('mac = ' + mac);
+            document.write(resp);
+        });
+
+        // 发送消息
+        // mqttClient.publish('cn/edu/cuz/scj/cmd/' + mac, JSON.stringify(msg));
+
+    </script>
+</body>
+
+</html>
