@@ -12,7 +12,7 @@
 <body>
     <h1 id="currentTime"></h1>
     当前温度：<span id="temperature"></span><br>
-    当前温度：<span id="humidity"></span><br>
+    当前湿度：<span id="humidity"></span><br>
     当前光照强度：<span id="lux"></span><br>
     当前蜂鸣器：<span id="buzzerState"></span><br>
     当前LED灯：<span id="getColor"></span><br>
@@ -36,7 +36,7 @@
 
             humidity.innerText = resp.humidity + '%'
 
-            lux.innerText = resp.light + 'lux'
+            lux.innerText = parseInt(resp.light) + 'lux'
             if (resp.buzzer) {
 
                 buzzerState.innerText = '正在警报'
@@ -54,6 +54,8 @@
             }
             else if (resp.led.color.toString(16) == '0000ff') {
                 getColor.innerText = '绿色' + '-----' + '当前温度可能不适宜'
+            }else if(resp.led.state = false){
+                getColor.innerText = '熄灭'
             }
         });
         setInterval(function () { document.getElementById("currentTime").innerHTML = new Date().toLocaleString(); }, 1000);
