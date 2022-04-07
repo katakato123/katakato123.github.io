@@ -10,6 +10,12 @@
 </head>
 
 <body>
+    <h1 id="currentTime"></h1>
+    当前温度：<span id="temperature"></span><br>
+    当前温度：<span id="humidity"></span><br>
+    当前光照强度：<span id="lux"></span><br>
+    当前蜂鸣器：<span id="buzzerState"></span><br>
+    当前LED灯：<span id="getColor"></span><br>
 
     <script>
         const mqttClient = mqtt.connect('wss://mqtt.eclipseprojects.io/mqtt');// 建立连接
@@ -18,10 +24,39 @@
             /* 接收消息回调 */
             let resp = JSON.parse(message.toString());
             let mac = topic.substring(20);
-
+            let lux = document.getElementById('lux')
+            let humidity = document.getElementById('humidity')
+            let temperature = document.getElementById('temperature')
+            let buzzerState = document.getElementById('buzzerState')
+            let getColor = document.getElementById('getColor')
             // console.log('mac = ' + mac);
-            document.write(resp);
+            // console.log(resp);
+
+            temperature.innerText = resp.temperature + '℃'
+
+            humidity.innerText = resp.humidity + '%'
+
+            lux.innerText = resp.light + 'lux'
+            if (resp.buzzer) {
+
+                buzzerState.innerText = '正在警报'
+            }else{
+                buzzerState.innerText = '安全阶段'
+            }
+            if (resp.led.color.toString(16) == 'ff0000') {
+                getColor.innerText = '红色' + '-----' + '当前可能有潜在威胁'
+            }
+            else if (resp.led.color.toString(16) == 'ffffff') {
+                getColor.innerText = '白色' + '-----' + '当前环境光亮可能过低'
+            }
+            else if (resp.led.color.toString(16) == '00ff00') {
+                getColor.innerText = '蓝色' + '-----' + '当前湿度可能不适宜'
+            }
+            else if (resp.led.color.toString(16) == '0000ff') {
+                getColor.innerText = '绿色' + '-----' + '当前温度可能不适宜'
+            }
         });
+        setInterval(function () { document.getElementById("currentTime").innerHTML = new Date().toLocaleString(); }, 1000);
 
         // 发送消息
         // mqttClient.publish('cn/edu/cuz/scj/cmd/' + mac, JSON.stringify(msg));
