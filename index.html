@@ -24,6 +24,7 @@
             /* 接收消息回调 */
             let resp = JSON.parse(message.toString());
             let mac = topic.substring(20);
+            //获取DOM
             let lux = document.getElementById('lux')
             let humidity = document.getElementById('humidity')
             let temperature = document.getElementById('temperature')
@@ -38,25 +39,28 @@
 
             lux.innerText = parseInt(resp.light) + 'lux'
             if (resp.buzzer) {
-
                 buzzerState.innerText = '正在警报'
-            }else{
+            } else {
                 buzzerState.innerText = '安全阶段'
             }
-            if (resp.led.color.toString(16) == 'ff0000') {
-                getColor.innerText = '红色' + '-----' + '当前可能有潜在威胁'
+            if (resp.led.state) {
+                if (resp.led.color.toString(16) == 'ff0000') {
+                    getColor.innerText = '红色' + '-----' + '当前可能有潜在威胁'
+                }
+                else if (resp.led.color.toString(16) == 'ffffff') {
+                    getColor.innerText = '白色' + '-----' + '当前环境光亮可能过低'
+                }
+                else if (resp.led.color.toString(16) == '00ff00') {
+                    getColor.innerText = '蓝色' + '-----' + '当前湿度可能不适宜'
+                }
+                else if (resp.led.color.toString(16) == '0000ff') {
+                    getColor.innerText = '绿色' + '-----' + '当前温度可能不适宜'
+                }
             }
-            else if (resp.led.color.toString(16) == 'ffffff') {
-                getColor.innerText = '白色' + '-----' + '当前环境光亮可能过低'
-            }
-            else if (resp.led.color.toString(16) == '00ff00') {
-                getColor.innerText = '蓝色' + '-----' + '当前湿度可能不适宜'
-            }
-            else if (resp.led.color.toString(16) == '0000ff') {
-                getColor.innerText = '绿色' + '-----' + '当前温度可能不适宜'
-            }else if(resp.led.state = false){
+            else if (!resp.led.state) {
                 getColor.innerText = '熄灭'
             }
+
         });
         setInterval(function () { document.getElementById("currentTime").innerHTML = new Date().toLocaleString(); }, 1000);
 
